@@ -8,4 +8,4 @@ router = Router()
 
 @router.message(Command('report'))
 async def start(message: Message):
-    await message.answer("Напишите название канала")
+    pass
