@@ -5,8 +5,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-#from send_analytics_bot.core.config import settings
-
 
 INFO = {
   "type": os.getenv('TYPE'),
