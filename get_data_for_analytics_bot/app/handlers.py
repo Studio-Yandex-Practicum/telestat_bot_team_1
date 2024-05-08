@@ -12,18 +12,19 @@ from app.parser import parser
 router = Router()
 load_dotenv()
 user1 = os.getenv('USER1')
+authorized_users = [4178867722, 5877825258, 1598142492, user1]
 
 
 @router.message(CommandStart())
 async def cmd_start(message: Message):
-    authorized_users = [4178867722, 5877825258, user1]
+
     if message.from_user.id in authorized_users:
         await message.answer('Hello', reply_markup=kb.button)
     else:
         await message.answer('К сожалению, у вас нет прав доступа')
 
 
-@router.callback_query_handler(command.filter(function='parser'))
+@router.callback_query_handler(command.filter(function='parse'))
 async def parser_callback_handler(callback_query: types.CallbackQuery):
     await callback_query.answer()
     try:
