@@ -11,8 +11,6 @@ from handlers import start, report
 load_dotenv()
 logging.basicConfig(level=logging.INFO)
 
-table_name = 'Тест таблица для проекта'
-
 
 async def main():
     bot = Bot(token=os.getenv('BOT_TOKEN'))
