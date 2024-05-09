@@ -1,9 +1,13 @@
+import os
+
 from aiogram import Router
 from aiogram.filters import Command
 from aiogram.types import Message
+from dotenv import load_dotenv
 
-
-authorized_users = [248393066,]
+load_dotenv()
+me = int(os.getenv('ME'))
+authorized_users = [me,]
 
 router = Router()
 
