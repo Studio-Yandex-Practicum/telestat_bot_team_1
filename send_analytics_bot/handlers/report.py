@@ -2,7 +2,8 @@ from aiogram import Router
 from aiogram.filters import Command
 from aiogram.types import Message
 
-from send_analytics_bot.services.spreadsheet_manager import google_sheets_manager
+from send_analytics_bot.services.spreadsheet_manager import \
+    google_sheets_manager
 
 
 router = Router()
