@@ -1,39 +1,38 @@
 import os
+import csv
 import asyncio
+import pyrogram
 from datetime import datetime
 from pyrogram import Client, filters, types
 from dotenv import load_dotenv
 
+import contstants
+
 load_dotenv()
 
-parser = Client('BotParser', api_id=os.getenv('API_ID'),
-                api_hash=os.getenv('API_HASH'),
-                phone_number=os.getenv('PHONE_NUMBER'),
-                bot_token=os.getenv('TOKEN'))
-started = datetime.today().strftime('%m/%d/%y %H:%M')
-print(f'App started at {started}')
 
-
-async def parse_chat(target):
-    with open(f'{target}.txt', 'w', encoding='utf8') as file:
-        i = 0
-        async for member in parser.get_chat_members(target):
-            i += 1
-#          await asyncio.sleep(1)
-            print(i, member.user.id,
-                  member.user.id,
-                  member.user.first_name,
-                  member.user.phone_number, file=file)
-
-
-@parser.on_message(filters.command('parse') & filters.chat('Myhelper'))
-async def chat_parser(client, message):
-    target_chat = message.text.split()[1].strip()
-    await parse_chat(target_chat)
+async def parsing():
+    async with pyrogram.Client('my_session', api_id=os.getenv('API_ID'),
+                               api_hash=os.getenv('API_HASH'),
+                               bot_token=os.getenv('TOKEN'),
+                               phone_number=os.getenv('PHONE_NUMBER')
+                               ) as client:
+        members = client.get_chat_members(os.getenv('TARGET_CHAT'))
+        results = []
+        async for member in members:
+            results.append([member.user.first_name, member.user.id,
+                            member.user.username, member.joined_date,
+                            member.user.phone_number,
+                            member.user.last_online_date])
+        with open(contstants.file_path, 'w', encoding='utf8') as f:
+            for result in results:
+                print(result)
+                writer = csv.writer(f, delimiter=' ')
+                writer.writerow(result)
 
 
 try:
-    parser.run()
+    asyncio.run(parsing())
 except KeyboardInterrupt:
     finish = datetime.today().strftime('%m/%d/%y %H:%M')
     print(f'App finished at{finish}')

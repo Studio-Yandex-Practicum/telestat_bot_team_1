@@ -52,8 +52,8 @@ def create_spreadsheet(service):
                 'sheetId': 0,
                 'title': 'Аналитика чата',
                 'gridProperties': {
-                    'rowCount': 100,
-                    'columnCount': 100
+                    'rowCount': 1000,
+                    'columnCount': 1000
                 }
              }
          }]
@@ -77,5 +77,25 @@ def set_user_permissions(spreadsheet_id, credentials):
     ).execute()
 
 
+def spreadsheet_update_values(service, spreadsheetId):
+    table_values = [
+        ['first_name', 'user.id', 'username', 'joined_date',
+         'phone_number', 'last_online_date'] 
+    ]
+
+    request_body = {
+        'majorDimension': 'ROWS',
+        'values': table_values
+    } 
+    request = service.spreadsheets().values().update(
+        spreadsheetId=spreadsheetId,
+        range='Отпуск 2077!A1:F20',
+        valueInputOption='USER_ENTERED',
+        body=request_body
+    )
+    request.execute()
+
+
 service, credentials = auth()
 spreadsheetId = create_spreadsheet(service)
+spreadsheet_update_values(service, spreadsheetId)
