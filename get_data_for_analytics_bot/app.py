@@ -11,8 +11,6 @@ from middlewares.db import DataBaseSession
 
 from database.engine import create_db, drop_db, session_maker
 
-# from handlers.user_private import user_private_router
-# from handlers.user_group import user_group_router
 from handlers.admin_private import admin_router
 
 from common.bot_cmds_list import private
@@ -20,7 +18,9 @@ from common.bot_cmds_list import private
 ALLOWED_UPDATES = ['message', 'edited_message', 'callback_query']
 
 bot = Bot(token=os.getenv('TOKEN'), parse_mode=ParseMode.HTML)
-bot.my_admins_list = [453595028]
+
+bot.my_admins_list = []
+bot.my_admins_list.append(int(os.getenv('SUPERUSER')))
 
 dp = Dispatcher()
 
@@ -49,7 +49,6 @@ async def main():
     await bot.delete_my_commands(scope=types.BotCommandScopeAllPrivateChats())
     await bot.set_my_commands(commands=private, scope=types.BotCommandScopeAllPrivateChats())
     await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())
-    print(f'Вот - список {bot.my_admins_list}')
 
 
 asyncio.run(main())

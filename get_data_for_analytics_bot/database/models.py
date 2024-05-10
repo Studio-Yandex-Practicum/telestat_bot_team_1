@@ -11,7 +11,6 @@ class UserTG(Base):
     __tablename__ = 'user'
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     username: Mapped[str] = mapped_column(String(32), nullable=False)
-    # user_id_tg: Mapped[str] = mapped_column(String(20), nullable=False)
     is_superuser: Mapped[str] = mapped_column(Boolean, default=False)
     is_admin: Mapped[str] = mapped_column(Boolean, default=False)
 

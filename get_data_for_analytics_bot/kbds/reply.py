@@ -1,7 +1,8 @@
-from aiogram.types import (ReplyKeyboardMarkup,
-                           KeyboardButton,
-                           ReplyKeyboardRemove
-                           )
+from aiogram.types import (
+    ReplyKeyboardMarkup,
+    KeyboardButton,
+    ReplyKeyboardRemove
+)
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
 
 
@@ -12,19 +13,6 @@ def get_keyboard(
         request_location: int = None,
         sizes: tuple[int] = (2, 2),
 ):
-    '''
-    Parameters request_contact and request_location must be as indexes of btns args for buttons you need.
-    Example:
-    get_keyboard(
-            'Выбор Telegram-канала',
-            'Установка периода сбора данных',
-            'Добавить администратора',
-            'Удалить администратора',
-            placeholder='Что вас интересует?',
-            request_contact=4,
-            sizes=(2, 2, 1)
-        )
-    '''
     keyboard = ReplyKeyboardBuilder()
 
     for index, text in enumerate(btns, start=0):
@@ -45,16 +33,18 @@ def get_keyboard(
 start_kb = ReplyKeyboardMarkup(
     keyboard=[
         [
-            KeyboardButton(text=''),
-            KeyboardButton(text=''),
+            KeyboardButton(text='Добавить администратора'),
+            KeyboardButton(text='Удалить админитратора'),
         ],
         {
-            KeyboardButton(text=''),
-            KeyboardButton(text=''),
+            KeyboardButton(text='Выбрать телеграм канал'),
+            KeyboardButton(text='Установка периода сбора данных'),
         }
     ],
     resize_keyboard=True,
-    input_field_placeholder='Выберите действие!'
+    one_time_keyboard=True,
+    input_field_placeholder='Выберите действие!',
+    selective=True
 )
 
 del_kbd = ReplyKeyboardRemove()

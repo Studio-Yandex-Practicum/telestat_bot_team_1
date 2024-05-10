@@ -7,7 +7,6 @@ from database.models import UserTG
 async def orm_add_admin(session: AsyncSession, data: dict):
     obj = (UserTG(
         username=data['username'],
-        # user_id_tg=data['user_id_tg'],
         is_admin=True,
     ))
     session.add(obj)
