@@ -24,11 +24,11 @@ async def cmd_start(message: Message):
         await message.answer('К сожалению, у вас нет прав доступа')
 
 
-@router.callback_query_handler(command.filter(function='parse'))
-async def parser_callback_handler(callback_query: types.CallbackQuery):
-    await callback_query.answer()
-    try:
-        parser.run()
-    except KeyboardInterrupt:
-        finish = datetime.today().strftime('%m/%d/%y %H:%M')
-        print(f'App finished at{finish}')
+#@router.callback_query_handler(command.filter(function='parse'))
+#async def parser_callback_handler(callback_query: types.CallbackQuery):
+#    await callback_query.answer()
+#    try:
+#        parser.run()
+#    except KeyboardInterrupt:
+#        finish = datetime.today().strftime('%m/%d/%y %H:%M')
+#        print(f'App finished at{finish}')

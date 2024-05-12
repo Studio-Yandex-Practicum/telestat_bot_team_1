@@ -3,6 +3,8 @@ import os
 from dotenv import load_dotenv
 from google.oauth2.service_account import Credentials
 from googleapiclient import discovery
+import asyncio
+from parser import parsing
 
 
 SCOPES = [
@@ -52,8 +54,8 @@ def create_spreadsheet(service):
                 'sheetId': 0,
                 'title': 'Аналитика чата',
                 'gridProperties': {
-                    'rowCount': 1000,
-                    'columnCount': 1000
+                    'rowCount': 100,
+                    'columnCount': 100
                 }
              }
          }]
@@ -69,7 +71,7 @@ def set_user_permissions(spreadsheet_id, credentials):
     permissions_body = {'type': 'user',
                         'role': 'writer',
                         'emailAddress': EMAIL_USER}
-    drive_service = discovery.build('drive', 'v3', credentials=credentials)
+    drive_service = DRIVE_SERVICE
     drive_service.permissions().create(
         fileId=spreadsheet_id,
         body=permissions_body,
@@ -78,24 +80,25 @@ def set_user_permissions(spreadsheet_id, credentials):
 
 
 def spreadsheet_update_values(service, spreadsheetId):
-    table_values = [
-        ['first_name', 'user.id', 'username', 'joined_date',
-         'phone_number', 'last_online_date'] 
-    ]
+#    table_values = [
+#        ['first_name', 'user.id', 'username', 'joined_date',
+#         'phone_number', 'last_online_date'],]
 
     request_body = {
         'majorDimension': 'ROWS',
-        'values': table_values
+        'values': asyncio.run(parsing())
     } 
     request = service.spreadsheets().values().update(
         spreadsheetId=spreadsheetId,
-        range='Отпуск 2077!A1:F20',
+        range='A1:F20',
         valueInputOption='USER_ENTERED',
         body=request_body
     )
     request.execute()
+    return 'Документ обновлён'
 
 
 service, credentials = auth()
 spreadsheetId = create_spreadsheet(service)
+set_user_permissions(spreadsheetId, credentials)
 spreadsheet_update_values(service, spreadsheetId)
