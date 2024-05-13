@@ -1,39 +1,41 @@
 import os
+#import csv
 import asyncio
-from datetime import datetime
-from pyrogram import Client, filters, types
+import pyrogram
+#from datetime import datetime
+#from pyrogram import Client, filters, types
 from dotenv import load_dotenv
+
+import contstants
 
 load_dotenv()
 
-parser = Client('Parser', api_id=os.getenv('API_ID'),
-                api_hash=os.getenv('API_HASH'),
-                phone_number=os.getenv('PHONE_NUMBER'),
-                bot_token=os.getenv('TOKEN'))
-started = datetime.today().strftime('%m/%d/%y %H:%M')
-print(f'App started at {started}')
+
+async def parsing():
+    async with pyrogram.Client('my_session', api_id=os.getenv('API_ID'),
+                               api_hash=os.getenv('API_HASH'),
+                               bot_token=os.getenv('TOKEN'),
+                               phone_number=os.getenv('PHONE_NUMBER')
+                               ) as client:
+        members = client.get_chat_members(os.getenv('TARGET_CHAT'))
+        results = [['first_name', 'user.id', 'username', #'joined_date',
+                   'phone_number', 'last_online_date']]
+        async for member in members:
+            results.append([member.user.first_name, member.user.id,
+                            member.user.username, #member.joined_date,
+                            member.user.phone_number,
+                            member.user.last_online_date.strftime(
+                                contstants.DATETIME_FORMAT)])
+#        with open(app.contstants.file_path, 'w', encoding='utf8') as f:
+#            for result in results:
+        print(results)
+        return results
+#                writer = csv.writer(f, delimiter=' ')
+#                writer.writerow(result)
 
 
-async def parse_chat(target):
-#    with open(f'{target}.txt', 'w', encoding='utf8') as file:
-#        i = 0
-    async for member in parser.get_chat_members(target):
-        await asyncio.sleep(1)
-
-        print(member.user.id)
-#              member.user.id,
-#              member.user.first_name,
-#              member.user.phone_number, file=file)
-
-
-@parser.on_message(filters.command('parse'))# & filters.chat('Family'))
-async def chat_parser(client, message):
-    target_chat = 'Family' #message.text.split()[1].strip()
-    await parse_chat(target_chat)
-
-
-try:
-    parser.run()
-except KeyboardInterrupt:
-    finish = datetime.today().strftime('%m/%d/%y %H:%M')
-    print(f'App finished at{finish}')
+#try:
+# asyncio.run(parsing())
+#except KeyboardInterrupt:
+#    finish = datetime.today().strftime('%m/%d/%y %H:%M')
+#    print(f'App finished at{finish}')
