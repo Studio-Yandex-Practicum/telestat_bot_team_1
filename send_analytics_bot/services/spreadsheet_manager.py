@@ -23,7 +23,7 @@ INFO = {
 class GoogleSheetsManager:
     def __init__(self, info):
         self.gc = gspread.service_account_from_dict(info)
-        self.spreadsheet = self.gc.open('Тест таблица для проекта')
+        self.spreadsheet = self.gc.open('Тест')
 
     def get_table_name(self):
         return self.spreadsheet.title
