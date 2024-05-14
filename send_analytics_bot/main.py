@@ -5,8 +5,7 @@ import os
 from aiogram import Bot, Dispatcher
 from dotenv import load_dotenv
 
-from handlers import start, report
-
+from handlers import report, start
 
 load_dotenv()
 logging.basicConfig(level=logging.INFO)
