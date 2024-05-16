@@ -1,22 +1,13 @@
 from aiogram import Bot, types
 from aiogram.filters import Filter
-from aiogram.types import Message
-from typing_extensions import Union
-from typing import List
 
 
 class ChatTypeFilter(Filter):
-    def __init__(self, chat_type: Union[str, list]) -> None:
-        self.chat_type = chat_type
+    def __init__(self, chat_types: list[str]) -> None:
+        self.chat_types = chat_types
 
-    async def __call__(self, message: Message) -> bool:
-        if isinstance(self.chat_type, str):
-            return message.chat.type == self.chat_type
-        else:
-            return message.chat.type in self.chat_type
-
-
-
+    async def __call__(self, message: types.Message) -> bool:
+        return message.chat.type in self.chat_types
 
 
 class IsAdmin(Filter):
