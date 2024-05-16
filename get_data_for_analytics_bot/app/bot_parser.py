@@ -1,12 +1,8 @@
 import os
-#import csv
-import asyncio
 import pyrogram
-#from datetime import datetime
-#from pyrogram import Client, filters, types
 from dotenv import load_dotenv
 
-import contstants
+import app.contstants
 
 load_dotenv()
 
@@ -25,17 +21,8 @@ async def parsing():
                             member.user.username, #member.joined_date,
                             member.user.phone_number,
                             member.user.last_online_date.strftime(
-                                contstants.DATETIME_FORMAT)])
-#        with open(app.contstants.file_path, 'w', encoding='utf8') as f:
-#            for result in results:
+                                app.contstants.DATETIME_FORMAT)])
+
         print(results)
+        await client.stop()
         return results
-#                writer = csv.writer(f, delimiter=' ')
-#                writer.writerow(result)
-
-
-#try:
-# asyncio.run(parsing())
-#except KeyboardInterrupt:
-#    finish = datetime.today().strftime('%m/%d/%y %H:%M')
-#    print(f'App finished at{finish}')

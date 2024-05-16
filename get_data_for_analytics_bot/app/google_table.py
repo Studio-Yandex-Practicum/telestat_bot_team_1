@@ -1,10 +1,11 @@
 import os
-
+# import asyncio
+from aiogoogle import Aiogoogle
+from aiogoogle.sessions.aiohttp_session import AiohttpSession
+from aiogoogle.auth.creds import ServiceAccountCreds
 from dotenv import load_dotenv
-from google.oauth2.service_account import Credentials
-from googleapiclient import discovery
-import asyncio
-from parser import parsing
+
+from app.bot_parser import parsing
 
 
 SCOPES = [
@@ -28,21 +29,14 @@ INFO = {
     'client_x509_cert_url':  os.environ['CLIENT_X509_CERT_URL']
 }
 
-CREDENTIALS = Credentials.from_service_account_info(
-    info=INFO, scopes=SCOPES)
+CREDENTIALS = ServiceAccountCreds(scopes=SCOPES, **INFO)
 
-SHEETS_SERVICE = discovery.build('sheets', 'v4', credentials=CREDENTIALS)
-DRIVE_SERVICE = discovery.build('drive', 'v3', credentials=CREDENTIALS)
-
-
-def auth():
-    credentials = Credentials.from_service_account_info(
-                  info=INFO, scopes=SCOPES)
-    service = discovery.build('sheets', 'v4', credentials=credentials)
-    return service, credentials
+app = Aiogoogle(service_account_creds=CREDENTIALS,
+                session_factory=AiohttpSession)
 
 
-def create_spreadsheet(service):
+async def create_spreadsheet() -> str:
+    service = await app.discover('sheets', 'v4')
     spreadsheet_body = {
         'properties': {
             'title': 'Аналитика пользователей чата',
@@ -60,45 +54,50 @@ def create_spreadsheet(service):
              }
          }]
     }
-    request = service.spreadsheets().create(body=spreadsheet_body)
-    response = request.execute()
+    response = await app.as_service_account(
+        service.spreadsheets.create(json=spreadsheet_body)
+    )
     spreadsheet_id = response['spreadsheetId']
     print('https://docs.google.com/spreadsheets/d/' + spreadsheet_id)
     return spreadsheet_id
 
 
-def set_user_permissions(spreadsheet_id, credentials):
+async def set_user_permissions(spreadsheet_id: str,
+                               ) -> None:
     permissions_body = {'type': 'user',
                         'role': 'writer',
                         'emailAddress': EMAIL_USER}
-    drive_service = DRIVE_SERVICE
-    drive_service.permissions().create(
-        fileId=spreadsheet_id,
-        body=permissions_body,
-        fields='id'
-    ).execute()
+    service = await app.discover('drive', 'v3')
+    await app.as_service_account(
+        service.permissions.create(
+            fileId=spreadsheet_id,
+            json=permissions_body,
+            fields="id"
+        ))
 
 
-def spreadsheet_update_values(service, spreadsheetId):
-#    table_values = [
-#        ['first_name', 'user.id', 'username', 'joined_date',
-#         'phone_number', 'last_online_date'],]
-
-    request_body = {
+async def spreadsheet_update_values(
+        spreadsheet_id: str,
+) -> None:
+    service = await app.discover('sheets', 'v4')
+    update_body = {
         'majorDimension': 'ROWS',
-        'values': asyncio.run(parsing())
-    } 
-    request = service.spreadsheets().values().update(
-        spreadsheetId=spreadsheetId,
-        range='A1:F20',
-        valueInputOption='USER_ENTERED',
-        body=request_body
+        'values': await parsing()
+    }
+    await app.as_service_account(
+        service.spreadsheets.values.update(
+            spreadsheetId=spreadsheet_id,
+            range='A1:E30',
+            valueInputOption='USER_ENTERED',
+            json=update_body
+        )
     )
-    request.execute()
-    return 'Документ обновлён'
 
 
-service, credentials = auth()
-spreadsheetId = create_spreadsheet(service)
-set_user_permissions(spreadsheetId, credentials)
-spreadsheet_update_values(service, spreadsheetId)
+async def collect_analytics():
+    spreadsheetid = await create_spreadsheet()
+    await set_user_permissions(spreadsheetid)
+    await spreadsheet_update_values(spreadsheetid)
+
+
+# asyncio.run(collect_analytics())
