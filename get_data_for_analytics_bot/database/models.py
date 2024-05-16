@@ -1,5 +1,6 @@
 from sqlalchemy import DateTime, String, func, Boolean
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from typing_extensions import Optional
 
 
 class Base(DeclarativeBase):
@@ -18,4 +19,13 @@ class UserTG(Base):
 class ChannelTG(Base):
     __tablename__ = 'channel'
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    tg_channel_name: Mapped[str] = mapped_column(String(64), nullable=False)
+    channel_id: Mapped[Optional[int]]
+    channel_name: Mapped[str] = mapped_column(String(64), nullable=False)
+    channel_current: Mapped[bool] = mapped_column(Boolean, default=False)
+
+
+class ParsingPROD(Base):
+    __tablename__ = 'period'
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    period_id: Mapped[Optional[int]]
+    period: Mapped[Optional[int]]
