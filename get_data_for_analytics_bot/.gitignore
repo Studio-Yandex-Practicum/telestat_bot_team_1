@@ -1,0 +1,10 @@
+/.venv
+.env
+env/
+venv/
+.venv
+__pycache__/
+results/
+/results
+my_session.session
+/my_session.session
