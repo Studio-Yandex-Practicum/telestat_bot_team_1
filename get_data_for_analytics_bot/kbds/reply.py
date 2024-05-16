@@ -46,12 +46,5 @@ start_kb = ReplyKeyboardMarkup(
     input_field_placeholder='Выберите действие!',
     selective=True
 )
+
 del_kbd = ReplyKeyboardRemove()
-
-channel_kb1 = ReplyKeyboardBuilder()
-channel_kb1.add(
-    KeyboardButton(text='Добавить канал в список TG-каналов'),
-    KeyboardButton(text='Удалить канал из списка TG-каналов'),
-)
-channel_kb1.adjust(1, 1)
-
