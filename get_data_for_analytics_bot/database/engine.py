@@ -2,7 +2,7 @@ import os
 
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
-from database.models import Base
+from get_data_for_analytics_bot.database.models import Base
 
 # from .env file:
 # DB_LITE=sqlite+aiosqlite:///my_base.db
