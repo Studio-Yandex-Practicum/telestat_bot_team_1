@@ -7,13 +7,14 @@ from dotenv import load_dotenv
 
 # from get_data_for_analytics_bot.database.engine import session_maker
 from handlers import adpin_panel
+from send_analytics_bot.services.conf import admin_conf
 
 load_dotenv()
 logging.basicConfig(level=logging.INFO)
 
 
 async def main():
-    bot = Bot(token=os.getenv('BOT_TOKEN'))
+    bot = Bot(admin_conf.bot_token)
     dp = Dispatcher()
     # dp.update.middleware(DataBaseSession(session_pool=session_maker))
     dp.include_routers(

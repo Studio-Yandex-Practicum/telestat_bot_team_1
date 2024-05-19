@@ -2,10 +2,6 @@ from aiogram import Bot, types
 from aiogram.filters import Filter
 
 
-from send_analytics_bot.keyboards.admin_keyboards import admin_keyboard
-from send_analytics_bot.states.admin_states import AdminStates
-
-
 class ChatTypeFilter(Filter):
     def __init__(self, chat_types: list[str]) -> None:
         self.chat_types = chat_types
