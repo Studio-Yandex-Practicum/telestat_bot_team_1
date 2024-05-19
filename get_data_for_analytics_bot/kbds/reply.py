@@ -34,7 +34,7 @@ start_kb = ReplyKeyboardMarkup(
     keyboard=[
         [
             KeyboardButton(text='Добавить администратора'),
-            KeyboardButton(text='Удалить админитратора'),
+            KeyboardButton(text='Удалить администратора'),
         ],
         {
             KeyboardButton(text='Выбрать телеграм канал'),

@@ -1,7 +1,7 @@
 from sqlalchemy import select, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from database.models import UserTG
+from get_data_for_analytics_bot.database.models import UserTG
 
 
 async def orm_add_admin(session: AsyncSession, data: dict):
